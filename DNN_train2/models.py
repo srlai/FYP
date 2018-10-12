@@ -57,13 +57,7 @@ class FullChannels(nn.Module):
                 nn.Conv2d(mid, oup, 1, 1, 0, bias = False) #conv2_1/linear
                 nn.ReLU6(inplace = True) #need ammend
             )
-        def conv_dw(inp, oup, stride):
-            return nn.Sequential(
-                nn.Conv2d(inp, inp, 3, stride, 1, groups=inp, bias=True),
-                nn.ReLU(inplace=True),
-                nn.Conv2d(inp, oup, 1, 1, 0, bias=True),
-                nn.ReLU(inplace=True),
-            )
+        
         self.model = nn.Sequential(
             nn.Conv2d(3, 32, 3, 2, 1, bias = False) #conv1
             nn.ReLU6(inplace = True)
