@@ -9,21 +9,21 @@
 
 
 // feature map buffers
-FIX_FM FM_buf1[16][34][34];
-FIX_FM FM_buf2[16][34][34];
-FIX_FM FM_buf3[16][34][34];
-FIX_FM FM_buf4[16][34][34];
-FIX_FM FM_buf5[16][34][34];
-FIX_FM FM_buf6[16][34][34];
-FIX_FM FM_buf7[16][34][34];
-FIX_FM FM_buf8[16][34][34];
-FIX_FM FM_buf9[16][34][34];
-FIX_FM FM_buf10[16][34][34];
-FIX_FM FM_buf11[16][34][34];
-FIX_FM FM_buf12[16][34][34];
-FIX_FM FM_buf13[16][34][34];
-FIX_FM FM_buf14[16][34][34];
-FIX_FM FM_buf15[16][34][34];
+FIX_FM FM_buf1[16][30][30];
+FIX_FM FM_buf2[16][30][30];
+FIX_FM FM_buf3[16][30][30];
+FIX_FM FM_buf4[16][30][30];
+FIX_FM FM_buf5[16][30][30];
+FIX_FM FM_buf6[16][30][30];
+FIX_FM FM_buf7[16][30][30];
+FIX_FM FM_buf8[16][30][30];
+FIX_FM FM_buf9[16][30][30];
+FIX_FM FM_buf10[16][30][30];
+FIX_FM FM_buf11[16][30][30];
+FIX_FM FM_buf12[16][30][30];
+FIX_FM FM_buf13[16][30][30];
+FIX_FM FM_buf14[16][30][30];
+FIX_FM FM_buf15[16][30][30];
 
 FIX_FM FM_buf_pool[16][10][20];
 
@@ -43,7 +43,7 @@ FIX_WT weight_buf_3x3_4[16][3][3];*/
 FIX_WT bias_buf[16][16];
 
 
-void fill_output( int layer, float buf[16][34][34], int ch, int col, int row);
+void fill_output( int layer, float buf[16][30][30], int ch, int col, int row);
 void fill_output_pool( int layer, float buf[16][10][20], int ch, int col, int row);
 
 int PL_golden_compare_layer_1();
@@ -162,7 +162,7 @@ void compute_bounding_box(float predict_box[5])
 }
 
 
-void buffer_copy_to_axi( FIX_FM dest[16][34][34], FIX_FM src[16][34][34])
+void buffer_copy_to_axi( FIX_FM dest[16][30][30], FIX_FM src[16][30][30])
 {
 	//memcpy(dest, src, sizeof(FIX_FM)*16*22*42);
 	for(int i = 0; i < 16; i++)
@@ -172,7 +172,7 @@ void buffer_copy_to_axi( FIX_FM dest[16][34][34], FIX_FM src[16][34][34])
 				dest[i][j][k] = src[i][j][k];
 }
 
-void buffer_copy_from_axi( FIX_FM dest[16][34][34], FIX_FM src[16][34][34])
+void buffer_copy_from_axi( FIX_FM dest[16][30][30], FIX_FM src[16][30][30])
 {
 	//memcpy(dest, src, sizeof(FIX_FM)*16*22*42);
 	for(int i = 0; i < 16; i++)
@@ -213,7 +213,7 @@ void load_bias_from_axi(FIX_WT dest[16][16], FIX_16_1 src[16])
 	}
 }
 
-void set_bias( FIX_FM buf[16][34][34], FIX_WT bias[16][16])
+void set_bias( FIX_FM buf[16][30][30], FIX_WT bias[16][16])
 {
 #pragma HLS ARRAY_PARTITION variable=buf  dim=1 complete
 #pragma HLS ARRAY_PARTITION variable=bias dim=1 complete
@@ -229,7 +229,7 @@ void set_bias( FIX_FM buf[16][34][34], FIX_WT bias[16][16])
 	}
 }
 
-void copy_to_DDR_pool9( FIX_FM dest[16][34][34], FIX_FM buf[16][10][20], int b_col, int b_row )
+void copy_to_DDR_pool9( FIX_FM dest[16][30][30], FIX_FM buf[16][10][20], int b_col, int b_row )
 {
 	for(int i = 0; i < 16; i++) {
 		for(int j = 0; j < 10; j++) {
@@ -256,7 +256,7 @@ void copy_to_DDR_pool9( FIX_FM dest[16][34][34], FIX_FM buf[16][10][20], int b_c
 }
 
 
-void load_pool_from_axi(FIX_FM buf[16][34][34], FIX_FM DDR_pool[96][82][162],
+void load_pool_from_axi(FIX_FM buf[16][30][30], FIX_FM DDR_pool[96][82][162],
 							int ch, int col, int row)
 {
 	for(int i = 0; i < 16; i++) {
@@ -298,7 +298,7 @@ void copy_to_DDR_pool6( FIX_FM ddr_pool6[96][42][82], FIX_FM buf[16][10][20], in
 
 
 
-void load_pool3_from_axi(FIX_FM buf[16][34][34], FIX_FM DDR_pool3[48][82][162],
+void load_pool3_from_axi(FIX_FM buf[16][30][30], FIX_FM DDR_pool3[48][82][162],
 							int ch, int col, int row)
 {
 	for(int i = 0; i < 16; i++) {
@@ -312,7 +312,7 @@ void load_pool3_from_axi(FIX_FM buf[16][34][34], FIX_FM DDR_pool3[48][82][162],
 }
 
 
-void load_pool6_from_axi(FIX_FM buf[16][34][34], FIX_FM DDR_pool6[96][42][82],
+void load_pool6_from_axi(FIX_FM buf[16][30][30], FIX_FM DDR_pool6[96][42][82],
 							int ch, int col, int row)
 {
 	for(int i = 0; i < 16; i++) {
@@ -346,7 +346,7 @@ FIX_FM img_norm_ch[256] = {
 };
 
 
-void load_image_chunk_norm(FIX_FM img_buf[16][34][34], uint8 image_in_raw_pad[3][258][258],
+void load_image_chunk_norm(FIX_FM img_buf[16][30][30], uint8 image_in_raw_pad[3][226][226],
 							int col, int row)
 {
 	for(int i = 0; i < 34; i++) {
@@ -401,7 +401,7 @@ inline FIX_FM max(FIX_FM a, FIX_FM b, FIX_FM c, FIX_FM d)
 }
 
 
-void max_pooling(FIX_FM buf_in[16][34][34], FIX_FM buf_out[16][10][20])
+void max_pooling(FIX_FM buf_in[16][30][30], FIX_FM buf_out[16][10][20])
 {
 #pragma HLS ARRAY_PARTITION variable=buf_in cyclic dim=1 factor=16
 #pragma HLS ARRAY_PARTITION variable=buf_out cyclic dim=1 factor=16
@@ -419,7 +419,7 @@ void max_pooling(FIX_FM buf_in[16][34][34], FIX_FM buf_out[16][10][20])
 }
 
 
-void clear_buf( FIX_FM buf[16][34][34])
+void clear_buf( FIX_FM buf[16][30][30])
 {
 
 	for(int j = 0; j < 34; j++) {
@@ -433,7 +433,7 @@ void clear_buf( FIX_FM buf[16][34][34])
 }
 
 
-void clear_padding( FIX_FM buf[16][34][34])
+void clear_padding( FIX_FM buf[16][30][30])
 {
 	for(int i = 0; i < 34; i++) {
 		for(int j = 0; j < 34; j++) {
@@ -447,7 +447,7 @@ void clear_padding( FIX_FM buf[16][34][34])
 	}
 }
 
-void Relu( FIX_FM buf[16][34][34] )
+void Relu( FIX_FM buf[16][30][30] )
 {
 	for(int j = 1; j <= 20; j++) {
 		for(int k = 1; k <= 40; k++) {
@@ -462,7 +462,7 @@ void Relu( FIX_FM buf[16][34][34] )
 	}
 }
 
-void Relu6( FIX_FM buf[16][34][34] )
+void Relu6( FIX_FM buf[16][30][30] )
 {
 	for(int j = 1; j <= 20; j++) {
 		for(int k = 1; k <= 40; k++) {
@@ -484,7 +484,7 @@ void Relu6( FIX_FM buf[16][34][34] )
 
 
 // ch col row are offsets corresponding to feature map
-void print_buf( float buf[16][34][34], int ch, int col, int row)
+void print_buf( float buf[16][30][30], int ch, int col, int row)
 {
 	for(int i = 0; i < 16; i++) {
 		for(int j = 1; j <= 32; j++) {
@@ -496,10 +496,10 @@ void print_buf( float buf[16][34][34], int ch, int col, int row)
 }
 
 
-void mobilenet(uint8 image_in_raw_pad[3][258][258],
+void mobilenet(uint8 image_in_raw_pad[3][226][26],
 
 				FIX_16_1 conv_weight_1x1_all[405][16][16],
-				FIX_16_1 conv_weight_3x3_all[34][34][3][3],
+				FIX_16_1 conv_weight_3x3_all[30][30][3][3],
 				FIX_16_1 bias_all[67][16],
 
 				//FIX_FM DDR_pool3_out_PL[48][82][162],
@@ -507,15 +507,15 @@ void mobilenet(uint8 image_in_raw_pad[3][258][258],
 
 				//FIX_FM DDR_pool_out_PL[96][82][162],
 
-				FIX_FM DDR_buf[36][16][34][34],
+				FIX_FM DDR_buf[36][16][30][30],
 
 				float predict_box[5]
 )
 {
 
-#pragma HLS INTERFACE m_axi depth=3*258*258 	port=image_in_raw_pad			offset=slave	bundle=IMG
+#pragma HLS INTERFACE m_axi depth=3*226*226 	port=image_in_raw_pad			offset=slave	bundle=IMG
 #pragma HLS INTERFACE m_axi depth=405*16*16		port=conv_weight_1x1_all		offset=slave	bundle=INPUT
-#pragma HLS INTERFACE m_axi depth=34*34*3*3		port=conv_weight_3x3_all		offset=slave	bundle=INPUT
+#pragma HLS INTERFACE m_axi depth=26*26*3*3		port=conv_weight_3x3_all		offset=slave	bundle=INPUT
 #pragma HLS INTERFACE m_axi depth=67*16			port=bias_all					offset=slave	bundle=INPUT
 
 //#pragma HLS INTERFACE m_axi depth=48*82*162		port=DDR_pool3_out_PL			offset=slave	bundle=INPUT
@@ -523,7 +523,7 @@ void mobilenet(uint8 image_in_raw_pad[3][258][258],
 
 //#pragma HLS INTERFACE m_axi depth=96*82*162		port=DDR_pool_out_PL			offset=slave	bundle=INPUT
 
-#pragma HLS INTERFACE m_axi depth=36*16*34*34	port=DDR_buf					offset=slave	bundle=INPUT
+#pragma HLS INTERFACE m_axi depth=36*16*26*26	port=DDR_buf					offset=slave	bundle=INPUT
 
 #pragma HLS INTERFACE m_axi depth=5				port=predict_box				offset=slave	bundle=OUTPUT
 
